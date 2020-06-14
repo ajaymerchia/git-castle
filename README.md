@@ -22,6 +22,17 @@
 npm install git-castle
 ```
 
+## Usage
+### Setup
+
+```sh
+git-castle init
+```
+
+### Add A New User
+
+
+
 ## Run tests
 
 ```sh

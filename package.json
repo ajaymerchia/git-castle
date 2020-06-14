@@ -1,6 +1,6 @@
 {
   "name": "git-castle",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A platform-agnostic, lightweight tool to manage secrets with git.",
   "main": "index.js",
   "scripts": {
@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/ajaymerchia/git-castle/issues"
   },
-  "homepage": "https://github.com/ajaymerchia/git-castle#readme"
+  "homepage": "https://github.com/ajaymerchia/git-castle#readme",
+  "bin": {
+    "say-hello": "./cli.js"
+  }
 }
