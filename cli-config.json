@@ -30,5 +30,51 @@
             }
         ],
         "main_file": "./subcommands/login"
+    },
+    "keygen": {
+        "help": "Generate your public & private RSA keys to share with a repository owner.",
+        "parameters": [
+            {
+                "flags": ["--username", "-u"],
+                "help": "Username of the profile on this machine you wish to switch to. Must be pre-existing.",
+                "required": true
+            },
+            {
+                "flags": ["--outfile", "-o"],
+                "help": "Outfile for your RSA public key. This is what you will share with others.",
+                "required": false
+            }
+        ],
+        "main_file": "./subcommands/keygen"
+    },
+    "guard": {
+        "help": "Marks a file for encryption before committing. Make sure that the file is in your .gitignore. To remove from git-castle, delete it from the .git-castle-secrets file.",
+        "parameters": [],
+        "main_file": "./subcommands/guard"
+    },
+    "lockdown": {
+        "help": "Encrypts all secrets in your repository.",
+        "parameters": [],
+        "main_file": "./subcommands/lockdown"
+    },
+    "reveal": {
+        "help": "Decrypts all secrets in your repository.",
+        "parameters": [],
+        "main_file": "./subcommands/reveal"
+    },
+    "hook": {
+        "help": "Adds git-castle to your pre-commit hook.",
+        "parameters": [],
+        "main_file": "./subcommands/send-key"
+    },
+    "send-key": {
+        "help": "",
+        "parameters": [],
+        "main_file": "./subcommands/send-key"
+    },
+    "receive-key": {
+        "help": "",
+        "parameters": [],
+        "main_file": "./subcommands/receive-key"
     }
 }

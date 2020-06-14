@@ -102,10 +102,32 @@ function getCurrentUser() {
     
 }
 
+exports.generateUserKeys = (username, rsaPublicKeyFile = null) => {
+    const { publicKey, privateKey } = CryptoBox.generateRSAKeys()
+    if (!fs.existsSync(certDir)) {
+        fs.mkdirSync(certDir)
+    }
+
+    if (!rsaPublicKeyFile) {
+        rsaPublicKeyFile = path.join(certDir, `${username}.cstl.pub`)
+    }
+    if (!rsaPublicKeyFile.endsWith(".cstl.pub")) {
+        throw new Error(`Invalid Public Key Extension. Must end with '.cstl.pub'`)
+    }
+
+    const rsaPrivateKeyFile = path.join(certDir, `${username}.cstl`)
+
+    console.log("Writing your public key to " + rsaPublicKeyFile)
+    console.log("Writing your private key to " + rsaPrivateKeyFile)
+    fs.writeFileSync(rsaPublicKeyFile, publicKey)
+    fs.writeFileSync(rsaPrivateKeyFile, privateKey)
+
+    return publicKey
+}
+
 exports.linkLocalUser = (username) => {
     const rsaPublicKeyFile = path.join(certDir, `${username}.cstl.pub`)
     var publicKey = null;
-    var privateKey = null;
 
     if (fs.existsSync(rsaPublicKeyFile)) {
         // load the public key and link the user
@@ -115,23 +137,7 @@ exports.linkLocalUser = (username) => {
 
         
     } else {
-        if (!fs.existsSync(certDir)) {
-            fs.mkdirSync(certDir)
-        }
-        const rsaPrivateKeyFile = path.join(certDir, `${username}.cstl`)
-
-        console.log("Generating secure RSA keys...")
-        var keys = CryptoBox.generateRSAKeys()
-        publicKey = keys.publicKey
-        privateKey = keys.privateKey
-
-
-        console.log("Writing your public key to " + rsaPrivateKeyFile)
-        console.log("Writing your private key to " + rsaPrivateKeyFile)
-        fs.writeFileSync(rsaPublicKeyFile, publicKey)
-        fs.writeFileSync(rsaPrivateKeyFile, privateKey)
-
-
+        publicKey = exports.generateUserKeys(username, rsaPublicKeyFile)
         console.log(`Adding ${username} to .git-castle using credentials in ${rsaPublicKeyFile}.\n\n`)
     }
 
