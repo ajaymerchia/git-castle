@@ -4,9 +4,46 @@ const { write } = require('fs');
 
 
 exports.generateSymmetricKey = () => {
-    // return "hello world"
     return crypto.createECDH('secp521r1').generateKeys().toString('hex').slice(0, 512)
 }
+
+const aesAlgorithm = "aes-256-cbc"
+
+exports.aesEncrypt = (plainText, masterKey) => {
+    const iv = crypto.randomBytes(16);
+    const hashKey = crypto.createHash("sha256");
+    hashKey.update(masterKey);
+
+    let key = hashKey.digest().slice(0, 32);
+
+    var blockCipher = crypto.createCipheriv(aesAlgorithm, key, iv);
+    var cipherText = blockCipher.update(plainText, 'utf8', 'hex')
+    cipherText += blockCipher.final('hex');
+
+    return JSON.stringify({
+        "encryptedContents": cipherText,
+        "iv": iv.toString("hex")
+    })
+}
+
+exports.aesDecrypt = (cipherPayload, masterKey) => {
+    const hashKey = crypto.createHash("sha256");
+    hashKey.update(masterKey);
+
+    let key = hashKey.digest().slice(0, 32);
+
+    const cipherTextStructured = JSON.parse(cipherPayload)
+    const iv = cipherTextStructured["iv"]
+    const cipherText = cipherTextStructured["encryptedContents"]
+
+    var blockDecipher = crypto.createDecipheriv(aesAlgorithm, key, iv);
+    var plainText = blockDecipher.update(cipherText, 'hex', 'utf8')
+    plainText += blockDecipher.final('utf8');
+
+    return plainText;
+}
+
+
 
 exports.generateRSAKeys = () => {
     return crypto.generateKeyPairSync("rsa", {
@@ -56,18 +93,3 @@ exports.randomKeyFile = () => {
 
 const data = exports.generateSymmetricKey()
 const { publicKey, privateKey } = exports.generateRSAKeys()
-
-// writeToGitCastle("pub", publicKey)
-// writeToGitCastle('priv', privateKey)
-// writeToGitCastle('data', data)
-// const pub2 = readFromGitCastle("pub")
-// const priv2 = readFromGitCastle("priv")
-// const data2 = readFromGitCastle("data")
-
-// const cipher = exports.rsaEncrypt(data2, pub2);
-
-// writeToGitCastle("hello.txt", cipher)
-// const cipher2 = readFromGitCastle("hello.txt")
-
-// const plain = exports.rsaDecrypt(cipher2, priv2);
-// console.log("decrypted: " + plain)

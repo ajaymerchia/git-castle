@@ -13,11 +13,11 @@ exports.main = (kwargs) => {
     for (var file of kwargs.files) {
         pathTail = path.relative(appRoot, file);
         if (pathTail.startsWith("..")) {
-            console.log(`Skipping ${file}. Not in current git repo.`)
+            LOG.info(`Skipping ${file}. Not in current git repo.`)
         }
         if (!currentContents.includes(pathTail)) {
             currentContents.push(pathTail)
-            console.log(`Added ${pathTail} to git-castle. Please add to your gitignore as well.`)
+            LOG.success(`Added ${pathTail} to git-castle. Please add to your gitignore as well.`)
         }
     }
 

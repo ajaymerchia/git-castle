@@ -3,6 +3,7 @@ const findGitRoot = require("find-git-root");
 var path = require('path');
 var fs = require('fs')
 const os = require('os')
+require('./utils/LOG')
 
 if (!fs.existsSync(".git")) {
     throw new Error("Must be in a git repository to use git-castle")
@@ -73,4 +74,8 @@ var args = parser.parseArgs();
 if (!noRequireInit.includes(args.subcommand) && !existsInGitCastle("")) {
     throw new Error(`No .git-castle file exists in this repository root. Please run git-castle init`)
 }
-require(args.lib).main(args)
+try {
+    require(args.lib).main(args)
+} catch (err) {
+    LOG.error(err.message)
+}

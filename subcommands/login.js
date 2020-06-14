@@ -20,6 +20,6 @@ exports.main = (kwargs) => {
 
     // overwrite the current user file
     Users.setUser(username)
-    console.log(`Logged in as ${username}`)
+    LOG.success(`Logged in as ${username}`)
 
 }

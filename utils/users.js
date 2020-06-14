@@ -27,9 +27,10 @@ exports.getUser = (username) => {
 }
 exports.getDecryptedKey = (username) => {
     const rsaPrivateKeyFile = path.join(certDir, `${username}.cstl`)
+    LOG.debug(`Decrypting as ${username}: ` + JSON.stringify(exports.getUser(username)))
     const encryptedKeyFile = `keys/${exports.getUser(username)["ecdh"]}`
 
-    console.log("Decrypting masterkey " + encryptedKeyFile + " using " + rsaPrivateKeyFile)
+    LOG.debug("Decrypting masterkey " + encryptedKeyFile + " using " + rsaPrivateKeyFile)
 
     try {
         return CryptoBox.rsaDecrypt(readFromGitCastle(encryptedKeyFile), fs.readFileSync(rsaPrivateKeyFile))
@@ -52,13 +53,13 @@ exports.linkUser = (username, rsaPublicKey) => {
     
     if (Object.keys(getUserList()).length == 0) {
         unencryptedMasterKey = CryptoBox.generateSymmetricKey();
-        console.log("Generate New Master ECDH Key.")
+        LOG.info("Generate New Master ECDH Key.")
     } else {
         // load the encryptedMasterKey using local credentials and decrypted it
         const rsaPrivateKeyFile = path.join(certDir, `${currUser}.cstl`)
         const encryptedKeyFile = `keys/${currUserRecord["ecdh"]}`
 
-        console.log("Decrypting masterkey " + encryptedKeyFile + " using " + rsaPrivateKeyFile)
+        LOG.debug("Decrypting masterkey " + encryptedKeyFile + " using " + rsaPrivateKeyFile)
 
         unencryptedMasterKey = CryptoBox.rsaDecrypt(readFromGitCastle(encryptedKeyFile), fs.readFileSync(rsaPrivateKeyFile))
     }
@@ -78,7 +79,7 @@ exports.linkUser = (username, rsaPublicKey) => {
         "rsa": publicKeyFile
     }
 
-    console.log(`Added ${username} to the list of trusted viewers.\n\n`)
+    LOG.success(`Added ${username} to the list of trusted viewers.\n\n`)
     // store the user record
     writeToGitCastle(userListFile, JSON.stringify(users))
 
@@ -99,7 +100,9 @@ function getCurrentUser() {
     } catch (err) {
         return null
     }
-    
+}
+exports.getCurrentUsername = () => {
+    return getCurrentUser()
 }
 
 exports.generateUserKeys = (username, rsaPublicKeyFile = null) => {
@@ -117,8 +120,8 @@ exports.generateUserKeys = (username, rsaPublicKeyFile = null) => {
 
     const rsaPrivateKeyFile = path.join(certDir, `${username}.cstl`)
 
-    console.log("Writing your public key to " + rsaPublicKeyFile)
-    console.log("Writing your private key to " + rsaPrivateKeyFile)
+    LOG.info("Writing your public key to " + rsaPublicKeyFile)
+    LOG.info("Writing your private key to " + rsaPrivateKeyFile)
     fs.writeFileSync(rsaPublicKeyFile, publicKey)
     fs.writeFileSync(rsaPrivateKeyFile, privateKey)
 
@@ -132,14 +135,12 @@ exports.linkLocalUser = (username) => {
     if (fs.existsSync(rsaPublicKeyFile)) {
         // load the public key and link the user
         publicKey = fs.readFileSync(rsaPublicKeyFile);
-        console.log(`Detected existing RSA keys for ${username}.`)
-        console.log(`Adding ${username} to .git-castle using credentials in ${rsaPublicKeyFile}.\n\n`)
-
-        
+        LOG.debug(`Detected existing RSA keys for ${username}.`)
     } else {
         publicKey = exports.generateUserKeys(username, rsaPublicKeyFile)
-        console.log(`Adding ${username} to .git-castle using credentials in ${rsaPublicKeyFile}.\n\n`)
     }
+    LOG.info(`Adding ${username} to .git-castle using credentials in ${rsaPublicKeyFile}.`)
+
 
     if (!getCurrentUser()) {
         addCurrentUserToRepoGitCastle(username)
