@@ -1,12 +1,7 @@
 
 const path = require('path')
+const fs = require('fs')
 const Users = require(path.join(castleModuleDir, "utils/users"))
-
-
-function readRSAPublicFile(key_path) {
-    // Returns the RSAPublicKey
-
-}
 
 exports.main = (kwargs) => {
     const username = kwargs.username;
@@ -15,7 +10,7 @@ exports.main = (kwargs) => {
     }
 
     if (kwargs.key_path) {
-        const rsaKey = readRSAPublicFile(kwargs.key_path);
+        const rsaKey = fs.readFileSync(kwargs.key_path);
         Users.linkUser(username, rsaKey);
     } else {
         Users.linkLocalUser(username);
