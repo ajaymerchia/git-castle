@@ -14,7 +14,7 @@ exports.aesEncrypt = (plainText, masterKey) => {
     const hashKey = crypto.createHash("sha256");
     hashKey.update(masterKey);
 
-    let key = hashKey.digest().slice(0, 32);
+    let key = hashKey.digest()
 
     var blockCipher = crypto.createCipheriv(aesAlgorithm, key, iv);
     var cipherText = blockCipher.update(plainText, 'utf8', 'hex')
@@ -30,10 +30,10 @@ exports.aesDecrypt = (cipherPayload, masterKey) => {
     const hashKey = crypto.createHash("sha256");
     hashKey.update(masterKey);
 
-    let key = hashKey.digest().slice(0, 32);
+    let key = hashKey.digest()
 
     const cipherTextStructured = JSON.parse(cipherPayload)
-    const iv = cipherTextStructured["iv"]
+    const iv = Buffer.from(cipherTextStructured["iv"], "hex")
     const cipherText = cipherTextStructured["encryptedContents"]
 
     var blockDecipher = crypto.createDecipheriv(aesAlgorithm, key, iv);
