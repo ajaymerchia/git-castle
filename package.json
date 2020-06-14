@@ -27,6 +27,7 @@
   "dependencies": {
     "argparse": "^1.0.10",
     "find-git-root": "^1.0.4",
+    "glob": "^7.1.6",
     "uuid": "^8.1.0"
   }
 }

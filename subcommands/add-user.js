@@ -10,10 +10,6 @@ function readRSAPublicFile(key_path) {
 
 exports.main = (kwargs) => {
     const username = kwargs.username;
-    if (!existsInGitCastle("")) {
-        throw new Error(`No .git-castle file exists in this repository root. Please run git-castle init`)
-    }
-
     if (Users.existsInRepo(username)) {
         throw new Error(`Could not add duplicate. ${username} already has access.`)
     }

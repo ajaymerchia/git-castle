@@ -2,7 +2,8 @@
     "init": {
         "help": "Initializes git-castle for your current repository.",
         "parameters": [],
-        "main_file": "./subcommands/init"
+        "main_file": "./subcommands/init",
+        "no_require_init": true
     },
     "add-user": {
         "help": "Adds a user to the trusted set of users that can decrypt secrets in this repository.",
@@ -45,11 +46,19 @@
                 "required": false
             }
         ],
-        "main_file": "./subcommands/keygen"
+        "main_file": "./subcommands/keygen",
+        "no_require_init": true
+
     },
     "guard": {
         "help": "Marks a file for encryption before committing. Make sure that the file is in your .gitignore. To remove from git-castle, delete it from the .git-castle-secrets file.",
-        "parameters": [],
+        "parameters": [
+            {
+                "flags": ["files"],
+                "help": "Secret files to add.",
+                "nargs": "+"
+            }
+        ],
         "main_file": "./subcommands/guard"
     },
     "lockdown": {
