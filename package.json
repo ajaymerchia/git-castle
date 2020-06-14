@@ -1,6 +1,6 @@
 {
   "name": "git-castle",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "A platform-agnostic, lightweight tool to manage secrets with git.",
   "main": "cli.js",
   "scripts": {
