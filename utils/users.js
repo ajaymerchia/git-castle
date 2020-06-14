@@ -1,10 +1,8 @@
-const os = require('os')
 const path = require('path')
 const fs = require("fs")
 const CryptoBox = require(path.join(castleModuleDir, "utils/cryptobox"))
 
 const userListFile = "keys2The.cstl";
-const certDir = path.join(os.homedir(), ".git-castle")
 
 function getUserList() {
     try {
@@ -12,10 +10,6 @@ function getUserList() {
     } catch (err) {
         return {}
     }
-}
-
-function getMasterKey() {
-
 }
 
 exports.existsInRepo = (username) => {
@@ -31,20 +25,19 @@ exports.getUser = (username) => {
     }
 
 }
+exports.getDecryptedKey = (username) => {
+    const rsaPrivateKeyFile = path.join(certDir, `${username}.cstl`)
+    const encryptedKeyFile = `keys/${exports.getUser(username)["ecdh"]}`
 
-function runTest(pub, priv) {
-    console.log("\n\n\nHELLO WORLD ASDL;JFA;SLDKJFAL;SKDJF")
-    console.log(priv.toString())
-    const data = CryptoBox.generateSymmetricKey()
-    const dataFile = CryptoBox.randomKeyFile();
-    const cipher = CryptoBox.rsaEncrypt(data, pub)
-    writeToGitCastle(dataFile, cipher)
-    const plain = CryptoBox.rsaDecrypt(readFromGitCastle(dataFile), priv)
-    console.log(plain.toString())
-    console.log(data == plain)
-    console.log("UNIT TEST PASSED!!!!!!!!!!!!!!!!!!1")
-    console.log("\n\n")
+    console.log("Decrypting masterkey " + encryptedKeyFile + " using " + rsaPrivateKeyFile)
+
+    try {
+        return CryptoBox.rsaDecrypt(readFromGitCastle(encryptedKeyFile), fs.readFileSync(rsaPrivateKeyFile))
+    } catch (err) {
+        return null
+    }
 }
+
 
 exports.linkUser = (username, rsaPublicKey) => {
     // adds the user, the user's RSA public key, and an encrypted copy of the masterKey to .gitcastle
@@ -93,6 +86,9 @@ exports.linkUser = (username, rsaPublicKey) => {
 }
 
 const currUserFile = "currUser.txt"
+exports.setUser = (username) => {
+    writeToGitCastle(currUserFile, username)
+}
 function addCurrentUserToRepoGitCastle(username) {
     writeToGitCastle(currUserFile, username)
     writeToGitCastle(".gitignore", currUserFile)

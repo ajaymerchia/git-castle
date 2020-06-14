@@ -2,9 +2,17 @@
 const findGitRoot = require("find-git-root");
 var path = require('path');
 var fs = require('fs')
+const os = require('os')
+
+if (!fs.existsSync(".git")) {
+    throw new Error("Must be in a git repository to use git-castle")
+}
+
+
 global.castleModuleDir = path.dirname(require.main.filename);
 global.appRoot = path.dirname(findGitRoot())
 global.gitCastleAppDir = path.join(appRoot, ".git-castle")
+global.certDir = path.join(os.homedir(), ".git-castle")
 
 global.writeToGitCastle = (file, contents) => {
     fs.writeFileSync(path.join(gitCastleAppDir, file), contents)
