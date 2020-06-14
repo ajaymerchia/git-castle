@@ -71,15 +71,34 @@
         "parameters": [],
         "main_file": "./subcommands/reveal"
     },
-    "hook": {
-        "help": "Adds git-castle to your pre-commit hook.",
+    "add-hook": {
+        "help": "Adds git-castle to your pre-commit and post-merge hooks. You may to mark your hooks as executable after this command",
         "parameters": [],
-        "main_file": "./subcommands/send-key"
+        "main_file": "./subcommands/add-hook",
+        "no_require_init": true
     },
     "send-key": {
         "help": "",
-        "parameters": [],
-        "main_file": "./subcommands/send-key"
+        "parameters": [
+            {
+                "flags": ["--username", "-u"],
+                "help": "Your username. Set when running 'git-castle keygen'",
+                "required": true
+            },
+            {
+                "flags": ["--key-path", "-k"],
+                "help": "Path to your .cstl.pub key",
+                "required": true
+            },
+            {
+                "flags": ["--receiver", "-r"],
+                "help": "Tunnel (url) where an existing owner is running 'git-castle receive-key'",
+                "required": true
+            }
+            
+        ],
+        "main_file": "./subcommands/send-key",
+        "no_require_init": true
     },
     "receive-key": {
         "help": "",

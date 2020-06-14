@@ -75,7 +75,13 @@ if (!noRequireInit.includes(args.subcommand) && !existsInGitCastle("")) {
     throw new Error(`No .git-castle file exists in this repository root. Please run git-castle init`)
 }
 try {
-    require(args.lib).main(args)
+    output = require(args.lib).main(args)
+    if (output === undefined || output === null) {
+        return true;
+    } else {
+        process.exit(1)
+    }
 } catch (err) {
     LOG.error(err.message)
+    return false
 }
