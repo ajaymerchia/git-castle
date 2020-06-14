@@ -32,8 +32,23 @@ exports.getUser = (username) => {
 
 }
 
-exports.linkUser = (username, rsaPublicKey, allowMasterKeyCreation = false) => {
+function runTest(pub, priv) {
+    console.log("\n\n\nHELLO WORLD ASDL;JFA;SLDKJFAL;SKDJF")
+    console.log(priv.toString())
+    const data = CryptoBox.generateSymmetricKey()
+    const dataFile = CryptoBox.randomKeyFile();
+    const cipher = CryptoBox.rsaEncrypt(data, pub)
+    writeToGitCastle(dataFile, cipher)
+    const plain = CryptoBox.rsaDecrypt(readFromGitCastle(dataFile), priv)
+    console.log(plain.toString())
+    console.log(data == plain)
+    console.log("UNIT TEST PASSED!!!!!!!!!!!!!!!!!!1")
+    console.log("\n\n")
+}
+
+exports.linkUser = (username, rsaPublicKey) => {
     // adds the user, the user's RSA public key, and an encrypted copy of the masterKey to .gitcastle
+
     const currUser = getCurrentUser();
     if (!currUser) {
         throw new Error("You must add yourself to git-castle before adding other users. Please run 'git-castle add-user {YOUR_USERNAME}'")
@@ -41,30 +56,28 @@ exports.linkUser = (username, rsaPublicKey, allowMasterKeyCreation = false) => {
 
     const currUserRecord = exports.getUser(currUser)
     var unencryptedMasterKey = null;
-    if (!currUserRecord) {
-        console.log("Generating Fresh Encryption Key.")
+    
+    if (Object.keys(getUserList()).length == 0) {
         unencryptedMasterKey = CryptoBox.generateSymmetricKey();
-        console.log("Generated " + unencryptedMasterKey)
+        console.log("Generate New Master ECDH Key.")
     } else {
         // load the encryptedMasterKey using local credentials and decrypted it
-        const privateKey = fs.readFileSync(path.join(certDir, `${username}.cstl`)).toString()
-        const userEncryptedKey = readFromGitCastle(`keys/${currUserRecord["ecdh"]}`)
+        const rsaPrivateKeyFile = path.join(certDir, `${currUser}.cstl`)
+        const encryptedKeyFile = `keys/${currUserRecord["ecdh"]}`
 
-        unencryptedMasterKey = CryptoBox.rsaDecrypt(Buffer.from(userEncryptedKey), privateKey)
-        console.log(unencryptedMasterKey)
+        console.log("Decrypting masterkey " + encryptedKeyFile + " using " + rsaPrivateKeyFile)
+
+        unencryptedMasterKey = CryptoBox.rsaDecrypt(readFromGitCastle(encryptedKeyFile), fs.readFileSync(rsaPrivateKeyFile))
     }
-
-    
+    const masterKeyFile = CryptoBox.randomKeyFile();
+    const publicKeyFile = CryptoBox.randomKeyFile() + ".pub";
     
     // encrypt the MasterKey with the user's RSA public key
     const encryptedMasterKey = CryptoBox.rsaEncrypt(unencryptedMasterKey, rsaPublicKey)
-    console.log("Encrypted to" + encryptedMasterKey)
-    
-    const masterKeyFile = CryptoBox.randomKeyFile();
-    const publicKeyFile = CryptoBox.randomKeyFile() + ".pub";
     // store the encrypted master key
     writeToGitCastle(path.join("keys", masterKeyFile), encryptedMasterKey);
     writeToGitCastle(path.join("users", publicKeyFile), rsaPublicKey);
+
     // store the user's RSA key
     var users = getUserList()
     users[username] = {
@@ -72,6 +85,7 @@ exports.linkUser = (username, rsaPublicKey, allowMasterKeyCreation = false) => {
         "rsa": publicKeyFile
     }
 
+    console.log(`Added ${username} to the list of trusted viewers.\n\n`)
     // store the user record
     writeToGitCastle(userListFile, JSON.stringify(users))
 
@@ -84,32 +98,50 @@ function addCurrentUserToRepoGitCastle(username) {
     writeToGitCastle(".gitignore", currUserFile)
 }
 function getCurrentUser() {
-    return readFromGitCastle(currUserFile)
+    try {
+        return readFromGitCastle(currUserFile)
+    } catch (err) {
+        return null
+    }
+    
 }
 
 exports.linkLocalUser = (username) => {
     const rsaPublicKeyFile = path.join(certDir, `${username}.cstl.pub`)
+    var publicKey = null;
+    var privateKey = null;
 
     if (fs.existsSync(rsaPublicKeyFile)) {
         // load the public key and link the user
-        const rsaPublicKey = fs.readFileSync(rsaPublicKeyFile);
+        publicKey = fs.readFileSync(rsaPublicKeyFile);
         console.log(`Detected existing RSA keys for ${username}.`)
-        console.log(`Adding ${username} to .git-castle using credentials in ${rsaPublicKeyFile}.`)
+        console.log(`Adding ${username} to .git-castle using credentials in ${rsaPublicKeyFile}.\n\n`)
 
-        addCurrentUserToRepoGitCastle(username)
-        return exports.linkUser(username, rsaPublicKey, true)
+        
     } else {
         if (!fs.existsSync(certDir)) {
             fs.mkdirSync(certDir)
         }
         const rsaPrivateKeyFile = path.join(certDir, `${username}.cstl`)
 
-        console.log("Generating secure keys...")
-        const { publicKey, privateKey } = CryptoBox.generateRSAKeys()
+        console.log("Generating secure RSA keys...")
+        var keys = CryptoBox.generateRSAKeys()
+        publicKey = keys.publicKey
+        privateKey = keys.privateKey
+
+
+        console.log("Writing your public key to " + rsaPrivateKeyFile)
+        console.log("Writing your private key to " + rsaPrivateKeyFile)
         fs.writeFileSync(rsaPublicKeyFile, publicKey)
         fs.writeFileSync(rsaPrivateKeyFile, privateKey)
-        addCurrentUserToRepoGitCastle(username)
-        console.log(`Adding ${username} to .git-castle using credentials in ${rsaPublicKeyFile}.`)
-        return exports.linkUser(username, publicKey, true)
+
+
+        console.log(`Adding ${username} to .git-castle using credentials in ${rsaPublicKeyFile}.\n\n`)
     }
+
+    if (!getCurrentUser()) {
+        addCurrentUserToRepoGitCastle(username)
+    }
+    exports.linkUser(username, publicKey)
+    addCurrentUserToRepoGitCastle(username)
 }

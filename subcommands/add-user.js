@@ -15,7 +15,7 @@ exports.main = (kwargs) => {
     }
 
     if (Users.existsInRepo(username)) {
-        // throw new Error(`Could not add duplicate. ${username} already has access.`)
+        throw new Error(`Could not add duplicate. ${username} already has access.`)
     }
 
     if (kwargs.key_path) {

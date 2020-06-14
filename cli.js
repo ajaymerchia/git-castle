@@ -10,7 +10,7 @@ global.writeToGitCastle = (file, contents) => {
     fs.writeFileSync(path.join(gitCastleAppDir, file), contents)
 }
 global.readFromGitCastle = (file) => {
-    return fs.readFileSync(path.join(gitCastleAppDir, file)).toString()
+    return fs.readFileSync(path.join(gitCastleAppDir, file))
 }
 global.existsInGitCastle = (file) => {
     return fs.existsSync(path.join(gitCastleAppDir, file))
