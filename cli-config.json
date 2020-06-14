@@ -1,0 +1,34 @@
+{
+    "init": {
+        "help": "Initializes git-castle for your current repository.",
+        "parameters": [],
+        "main_file": "./subcommands/init"
+    },
+    "add-user": {
+        "help": "Adds a user to the trusted set of users that can decrypt secrets in this repository.",
+        "parameters": [
+            {
+                "flags": ["--username", "-u"], 
+                "help": "Username of the user on this machine. If you use multiple machines, you can create a dummy username (e.g. ajaymerchia.mac & ajaymerchia.pc)",
+                "required": true
+            },
+            {
+                "flags": ["--key-path", "-k"],
+                "help": "Filepath to the RSA public key for this user.",
+                "required": false
+            }
+        ],
+        "main_file": "./subcommands/add-user"
+    },
+    "login": {
+        "help": "Switch your repository-level profile to an identity stored in your ~/.git-castle directory.",
+        "parameters": [
+            {
+                "flags": ["--username", "-u"],
+                "help": "Username of the profile on this machine you wish to switch to. Must be pre-existing.",
+                "required": true
+            }
+        ],
+        "main_file": "./subcommands/login"
+    }
+}

@@ -1,3 +1,56 @@
 #!/usr/bin/env node
-const [, , ...args] = process.argv
-console.log(`Hello World ${args}`)
+const findGitRoot = require("find-git-root");
+var path = require('path');
+var fs = require('fs')
+global.castleModuleDir = path.dirname(require.main.filename);
+global.appRoot = path.dirname(findGitRoot())
+global.gitCastleAppDir = path.join(appRoot, ".git-castle")
+
+global.writeToGitCastle = (file, contents) => {
+    fs.writeFileSync(path.join(gitCastleAppDir, file), contents)
+}
+global.readFromGitCastle = (file) => {
+    return fs.readFileSync(path.join(gitCastleAppDir, file)).toString()
+}
+global.existsInGitCastle = (file) => {
+    return fs.existsSync(path.join(gitCastleAppDir, file))
+}
+
+
+const ArgumentParser = require('argparse').ArgumentParser;
+const ParserConfig = require('./cli-config.json');
+
+
+
+var parser = new ArgumentParser({
+    version: '0.0.1',
+    addHelp: true,
+    description: 'The git-castle CLI allows you to store secrets securely in your repo.'
+});
+
+var subparsers = parser.addSubparsers({
+    title: 'subcommands',
+    description: "valid subcommands for git-castle"
+});
+
+for (var subcommand in ParserConfig) {
+    const config = ParserConfig[subcommand]
+    const newSubparser = subparsers.addParser(subcommand, { addHelp: true, description: config["help"] })
+    newSubparser.setDefaults({ "lib": config["main_file"] })
+    
+    for (var parameter of config["parameters"]) {
+        var flags = parameter["flags"]
+        newSubparser.addArgument(flags, {
+            "help": parameter["help"],
+            "required": parameter["required"]
+        })
+    }
+
+}
+
+// const subcommand = args[0]
+// const params = args[]
+
+// dispatches all subcommands
+var args = parser.parseArgs();
+require(args.lib).main(args)

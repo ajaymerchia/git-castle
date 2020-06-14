@@ -2,7 +2,7 @@
   "name": "git-castle",
   "version": "1.0.1",
   "description": "A platform-agnostic, lightweight tool to manage secrets with git.",
-  "main": "index.js",
+  "main": "cli.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -22,6 +22,11 @@
   },
   "homepage": "https://github.com/ajaymerchia/git-castle#readme",
   "bin": {
-    "say-hello": "./cli.js"
+    "git-castle": "./cli.js"
+  },
+  "dependencies": {
+    "argparse": "^1.0.10",
+    "find-git-root": "^1.0.4",
+    "uuid": "^8.1.0"
   }
 }
