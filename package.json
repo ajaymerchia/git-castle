@@ -1,0 +1,24 @@
+{
+  "name": "git-castle",
+  "version": "1.0.0",
+  "description": "A platform-agnostic, lightweight tool to manage secrets with git.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ajaymerchia/git-castle.git"
+  },
+  "keywords": [
+    "secrets",
+    "keys",
+    "encrypt"
+  ],
+  "author": "Ajay Raj Merchia",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ajaymerchia/git-castle/issues"
+  },
+  "homepage": "https://github.com/ajaymerchia/git-castle#readme"
+}
