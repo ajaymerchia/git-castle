@@ -1,6 +1,6 @@
-<h1 align="center">Welcome to git-castle 👋</h1>
+<h1 align="center">Git-Castle 🏰</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-1.1.2-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-1.1.3-blue.svg?cacheSeconds=2592000" />
   <a href="https://github.com/ajaymerchia/git-castle#readme" target="_blank">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
   </a>
@@ -12,9 +12,9 @@
   </a>
 </p>
 
-> A platform-agnostic, simple tool to manage secrets with git.
+> Store Secrets in Github Securely with `git-castle`!
 
-I was trying to work on a project with some fellow developers working on PCs. Unfortunately, existing tools are limited by platform, require extremely convoluted setup/installers, or just plain-old don't work.
+I was trying to work on a project with some fellow developers working on PCs. Unfortunately, existing tools are limited by platform (few work well on PC), require extremely convoluted setup/installers, or just plain-old don't work.
 
 Introducing `git-castle`! The easiest, lightweight way to manage secrets without the necessity for a full Key Management Solution.
 
