@@ -28,5 +28,5 @@ log4js.configure({
     },
 });
 var logger = log4js.getLogger();
-logger.level = "debug";
+logger.level = "success";
 global.LOG = logger;

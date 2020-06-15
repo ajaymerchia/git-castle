@@ -42,6 +42,9 @@ exports.getDecryptedKey = (username) => {
 
 exports.linkUser = (username, rsaPublicKey) => {
     // adds the user, the user's RSA public key, and an encrypted copy of the masterKey to .gitcastle
+    if (exports.existsInRepo(username)) {
+        throw new Error(`Could not add duplicate. ${username} already has access.`)
+    }
 
     const currUser = getCurrentUser();
     if (!currUser) {

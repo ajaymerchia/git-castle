@@ -19,10 +19,25 @@ exports.main = (ignored) => {
         // ignore
     }
 
+    var changedFiles = false;
+
     for (secretFile of secretsManifest) {
+        if (secretFile.trim() == "") {
+            continue
+        }
+        LOG.debug(`Locking down ${secretFile}`)
+
         const secretFilePlaintextPath = path.join(appRoot, secretFile)
         const secretFileEncryptedPath = secretFilePlaintextPath + ".secret"
 
+        if (fs.existsSync(secretFileEncryptedPath)) {
+            const existingContents = CryptoBox.aesDecrypt(fs.readFileSync(secretFileEncryptedPath), masterKey)
+            const hasChanged = (existingContents == fs.readFileSync(secretFilePlaintextPath))
+            if (!hasChanged) {
+                LOG.info(`Skipping ${secretFile}. Contents have not changed.`)
+                continue
+            }
+        }
         LOG.info("Encrypting "
             + path.relative(appRoot, secretFilePlaintextPath)
             + " to "
@@ -30,9 +45,9 @@ exports.main = (ignored) => {
         )
         
         fs.writeFileSync(secretFileEncryptedPath, CryptoBox.aesEncrypt(fs.readFileSync(secretFilePlaintextPath), masterKey))
-
+        changedFiles = true;
     }
 
-    return false
+    return changedFiles;
 
 }

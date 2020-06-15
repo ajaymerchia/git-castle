@@ -14,6 +14,7 @@ exports.main = (kwargs) => {
         pathTail = path.relative(appRoot, file);
         if (pathTail.startsWith("..")) {
             LOG.info(`Skipping ${file}. Not in current git repo.`)
+            continue
         }
         if (!currentContents.includes(pathTail)) {
             currentContents.push(pathTail)

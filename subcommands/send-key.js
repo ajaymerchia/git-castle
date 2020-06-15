@@ -5,7 +5,7 @@ const fs = require('fs')
 exports.main = (kwargs) => {
     var username = kwargs.username
     var rsaPublicKeyFile = kwargs.key_path
-    var endpoint = path.join(kwargs.receiver, "rsa-key").replace("https:/", "https://")
+    var endpoint = `https://${kwargs.receiver}.ngrok.io/rsa-key`
     if (!rsaPublicKeyFile.endsWith(".cstl.pub")) {
         throw new Error(`Invalid Public Key Extension. Must end with '.cstl.pub'`)
     }
@@ -17,7 +17,7 @@ exports.main = (kwargs) => {
     }).then((response) => {
         LOG.success(response.data)
     }).catch((err) => {
-        LOG.error("Failed to send request.")
+        LOG.error(err.response.data.error || err.response.data)
     })
 
 }
