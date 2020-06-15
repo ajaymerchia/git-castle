@@ -19,7 +19,7 @@ exports.main = (ignored) => {
         // ignore
     }
 
-    var changedFiles = false;
+    var numchanges = 0;
 
     for (secretFile of secretsManifest) {
         if (secretFile.trim() == "") {
@@ -32,7 +32,7 @@ exports.main = (ignored) => {
 
         if (fs.existsSync(secretFileEncryptedPath)) {
             const existingContents = CryptoBox.aesDecrypt(fs.readFileSync(secretFileEncryptedPath), masterKey)
-            const hasChanged = (existingContents == fs.readFileSync(secretFilePlaintextPath))
+            const hasChanged = (existingContents !== fs.readFileSync(secretFilePlaintextPath).toString())
             if (!hasChanged) {
                 LOG.info(`Skipping ${secretFile}. Contents have not changed.`)
                 continue
@@ -45,9 +45,9 @@ exports.main = (ignored) => {
         )
         
         fs.writeFileSync(secretFileEncryptedPath, CryptoBox.aesEncrypt(fs.readFileSync(secretFilePlaintextPath), masterKey))
-        changedFiles = true;
+        numchanges += 1;
     }
 
-    return changedFiles;
+    return numchanges;
 
 }

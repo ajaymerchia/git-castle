@@ -89,9 +89,6 @@ for (var subcommand in ParserConfig) {
 
 }
 
-// const subcommand = args[0]
-// const params = args[]
-
 // dispatches all subcommands
 var args = parser.parseArgs();
 if (args.verbose) {
@@ -107,12 +104,13 @@ if (!noRequireInit.includes(args.subcommand) && !existsInGitCastle("")) {
 }
 try {
     output = require(args.lib).main(args)
-    if (output === undefined || output === null) {
-        return true;
+
+    if (!output) {
+        process.exit(0)
     } else {
         process.exit(1)
     }
 } catch (err) {
     LOG.error(err.message)
-    return false
+    process.exit(1)
 }
