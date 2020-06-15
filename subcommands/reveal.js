@@ -19,6 +19,8 @@ exports.main = (ignored) => {
         // ignore
     }
 
+    var numDecryptions = 0;
+
     for (secretFile of secretsManifest) {
         const secretFilePlaintextPath = path.join(appRoot, secretFile)
         const secretFileEncryptedPath = secretFilePlaintextPath + ".secret"
@@ -30,8 +32,10 @@ exports.main = (ignored) => {
         )
 
         fs.writeFileSync(secretFilePlaintextPath, CryptoBox.aesDecrypt(fs.readFileSync(secretFileEncryptedPath), masterKey))
-
+        numDecryptions += 1
     }
+
+    LOG.success(`Decrypted ${numDecryptions} files`)
 
 
 }
