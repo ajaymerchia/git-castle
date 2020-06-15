@@ -1,6 +1,6 @@
 <h1 align="center">Welcome to git-castle 👋</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-1.1.1-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-1.1.2-blue.svg?cacheSeconds=2592000" />
   <a href="https://github.com/ajaymerchia/git-castle#readme" target="_blank">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
   </a>
@@ -79,8 +79,10 @@ git-castle add-hook # Recommended for the future
 
 ## How it Works
 
-
-
+![Alt text](design.png "Security Architecture")
+- The first encryptor generates the `master_key` which will be used to encrypt/decrypt all secrets stored in the repository.
+- To add another user, a `git-castle` user with access to the `master_key` creates an `encrypted master_key (EMK)` using a 4096bit RSA key and stores it in the `.git-castle` directory. That user can then access secrets by decrypting the `EMK` using their RSA private key.
+- To add a new secret, a `git-castle` user simply encrypts the secret with the `master_key` and uploads the secret to the repository. All secrets are encrypted using `aes-256-cbc`.
 
 ## Author
 
