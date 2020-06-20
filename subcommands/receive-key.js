@@ -29,5 +29,6 @@ exports.main = (kwargs) => {
         const receiverID = new URL(info).hostname.split(".")[0];
         LOG.success(`Accepting keys! Your Receiver ID is '${receiverID}'. Share this ID with a joiner.`)
     })
+
 }
 

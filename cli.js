@@ -104,11 +104,14 @@ if (!noRequireInit.includes(args.subcommand) && !existsInGitCastle("")) {
 }
 try {
     output = require(args.lib).main(args)
-
-    if (!output) {
-        process.exit(0)
+    if (!ParserConfig[args.subcommand]["keep_alive"]) {
+        if (!output) {
+            process.exit(0)
+        } else {
+            process.exit(1)
+        }
     } else {
-        process.exit(1)
+        LOG.info("Module requires keep-alive.")
     }
 } catch (err) {
     LOG.error(err.message)

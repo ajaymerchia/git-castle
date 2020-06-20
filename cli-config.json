@@ -103,6 +103,7 @@
     "receive-key": {
         "help": "",
         "parameters": [],
-        "main_file": "./subcommands/receive-key"
+        "main_file": "./subcommands/receive-key",
+        "keep_alive": true
     }
 }
