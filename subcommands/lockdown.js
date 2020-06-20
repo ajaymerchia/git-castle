@@ -3,7 +3,7 @@ const path = require('path')
 const fs = require('fs')
 const Users = require(path.join(castleModuleDir, "utils/users"))
 const CryptoBox = require(path.join(castleModuleDir, "utils/cryptobox"))
-
+var glob = require('glob-fs')();
 
 exports.main = (ignored) => {
     const currUsername = Users.getCurrentUsername()
@@ -11,20 +11,39 @@ exports.main = (ignored) => {
         throw new Error("Please login (git-castle login) or add a user (git-castle add-user -u username).")
     }
     const masterKey = Users.getDecryptedKey(currUsername)
+
     
-    var secretsManifest = []
+    
+    var pathSpecs = []
     try {
-        secretsManifest = fs.readFileSync(gitCastleSecrets).toString().split("\n")
+        pathSpecs = fs.readFileSync(gitCastleSecrets).toString().split("\n")
     } catch (err) {
         // ignore
     }
 
+    var secretsManifest = new Set()
+
+    for (pathSpec of pathSpecs) {
+        if (pathSpec.includes("*")) {
+            var files = glob.readdirSync(pathSpec);
+            LOG.debug(`Resolved ${pathSpec} to [${files}]`)
+            for (file of files) {
+                secretsManifest.add(file)
+            }
+        } else {
+            secretsManifest.add(pathSpec)
+        }
+    }
+    
+
+    
     var numchanges = 0;
 
     for (secretFile of secretsManifest) {
         if (secretFile.trim() == "") {
             continue
         }
+
         LOG.debug(`Locking down ${secretFile}`)
 
         const secretFilePlaintextPath = path.join(appRoot, secretFile)
