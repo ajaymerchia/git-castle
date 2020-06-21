@@ -98,7 +98,8 @@
             
         ],
         "main_file": "./subcommands/send-key",
-        "no_require_init": true
+        "no_require_init": true,
+        "keep_alive": true
     },
     "receive-key": {
         "help": "",

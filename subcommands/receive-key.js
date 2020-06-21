@@ -12,6 +12,7 @@ exports.main = (kwargs) => {
     receiver.use(bodyParser.json());
 
     receiver.post("/rsa-key", (req, res) => {
+        LOG.info("Received key request from a user.")
         try {
             Users.linkUser(req.body.username, req.body.rsaPublicKey)
         } catch (err) {

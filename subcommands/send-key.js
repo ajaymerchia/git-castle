@@ -16,8 +16,10 @@ exports.main = (kwargs) => {
         "rsaPublicKey": fs.readFileSync(rsaPublicKeyFile).toString()
     }).then((response) => {
         LOG.success(response.data)
+        process.exit(0)
     }).catch((err) => {
         LOG.error(err.response.data.error || err.response.data)
+        process.exit(0)
     })
 
 }
