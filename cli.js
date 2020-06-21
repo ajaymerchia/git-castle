@@ -6,12 +6,12 @@ require('./utils/LOG')
 
 
 var execSync = require('child_process').execSync;
-if (!execSync('git rev-parse --is-inside-work-tree 2>/dev/null', { encoding: 'utf8' })) {
+if (!execSync('git rev-parse --is-inside-work-tree', { encoding: 'utf8' })) {
     throw new Error("Must be in a git repository to use git-castle")
 }
 
 global.castleModuleDir = path.dirname(require.main.filename);
-global.appRoot = execSync('git rev-parse --show-toplevel 2>/dev/null', { encoding: 'utf8' }).trim()
+global.appRoot = execSync('git rev-parse --show-toplevel', { encoding: 'utf8' }).trim()
 
 global.gitCastleAppDir = path.join(appRoot, ".git-castle")
 global.certDir = path.join(os.homedir(), ".git-castle")
