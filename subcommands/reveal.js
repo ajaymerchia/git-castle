@@ -11,12 +11,26 @@ exports.main = (ignored) => {
         throw new Error("Please login (git-castle login) or add a user (git-castle add-user -u username).")
     }
     const masterKey = Users.getDecryptedKey(currUsername)
-
-    var secretsManifest = []
+    
+    var pathSpecs = []
     try {
-        secretsManifest = fs.readFileSync(gitCastleSecrets).toString().split("\n")
+        pathSpecs = fs.readFileSync(gitCastleSecrets).toString().split("\n")
     } catch (err) {
         // ignore
+    }
+
+    var secretsManifest = new Set()
+
+    for (pathSpec of pathSpecs) {
+        if (pathSpec.includes("*")) {
+            var files = glob.readdirSync(pathSpec);
+            LOG.debug(`Resolved ${pathSpec} to [${files}]`)
+            for (file of files) {
+                secretsManifest.add(file)
+            }
+        } else {
+            secretsManifest.add(pathSpec)
+        }
     }
 
     var numDecryptions = 0;
