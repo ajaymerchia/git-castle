@@ -11,7 +11,7 @@ exports.main = (ignored) => {
         throw new Error("Please login (git-castle login) or add a user (git-castle add-user -u username).")
     }
     const masterKey = Users.getDecryptedKey(currUsername)
-    
+
     var pathSpecs = []
     try {
         pathSpecs = fs.readFileSync(gitCastleSecrets).toString().split("\n")
@@ -36,6 +36,9 @@ exports.main = (ignored) => {
     var numDecryptions = 0;
 
     for (secretFile of secretsManifest) {
+        if (secretFile.trim() == "") {
+            continue
+        }
         const secretFilePlaintextPath = path.join(appRoot, secretFile)
         const secretFileEncryptedPath = secretFilePlaintextPath + ".secret"
 

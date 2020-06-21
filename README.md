@@ -1,6 +1,6 @@
 <h1 align="center">Git-Castle 🏰</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-1.1.8-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-1.1.9-blue.svg?cacheSeconds=2592000" />
   <a href="https://github.com/ajaymerchia/git-castle#readme" target="_blank">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
   </a>
