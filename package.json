@@ -1,6 +1,6 @@
 {
   "name": "git-castle",
-  "version": "1.1.9",
+  "version": "1.1.10",
   "description": "A platform-agnostic, lightweight tool to manage secrets with git.",
   "main": "cli.js",
   "scripts": {
@@ -28,7 +28,7 @@
     "argparse": "^1.0.10",
     "axios": "^0.19.2",
     "express": "^4.17.1",
-    "glob-fs": "^0.1.7",
+    "glob": "^7.1.6",
     "log4js": "^6.3.0",
     "ngrok": "^3.2.7",
     "uuid": "^8.1.0"

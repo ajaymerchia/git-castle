@@ -48,7 +48,7 @@ exports.main = (ignored) => {
             + path.relative(appRoot, secretFilePlaintextPath)
         )
 
-        fs.writeFileSync(secretFilePlaintextPath, CryptoBox.aesDecrypt(fs.readFileSync(secretFileEncryptedPath), masterKey))
+        fs.writeFileSync(secretFilePlaintextPath, CryptoBox.aesDecrypt(fs.readFileSync(secretFileEncryptedPath), masterKey), { flag: 'w+' })
         numDecryptions += 1
     }
 
