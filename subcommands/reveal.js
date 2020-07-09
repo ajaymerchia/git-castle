@@ -3,6 +3,7 @@ const path = require('path')
 const fs = require('fs')
 const Users = require(path.join(castleModuleDir, "utils/users"))
 const CryptoBox = require(path.join(castleModuleDir, "utils/cryptobox"))
+var glob = require('glob-fs')();
 
 
 exports.main = (ignored) => {
